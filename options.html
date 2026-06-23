@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>NicoRepo2 Options</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="page">
+      <header class="page-header">
+        <div>
+          <h1>NicoRepo2</h1>
+          <p>ニコニコ動画上の行動を検知して、Xの投稿画面から個別に自動投稿します。</p>
+        </div>
+        <button id="saveButton" type="button">保存</button>
+      </header>
+
+      <section class="section">
+        <h2>基本設定</h2>
+        <label class="checkbox-row">
+          <input id="enabled" type="checkbox">
+          <span>拡張機能を有効にする</span>
+        </label>
+        <label>
+          <span>対象タグ</span>
+          <textarea id="targetTags" rows="4" spellcheck="false"></textarea>
+        </label>
+        <p class="hint">改行またはカンマ区切りで指定します。通常は投稿文のハッシュタグ用です。</p>
+        <label class="checkbox-row">
+          <input id="filterByTags" type="checkbox">
+          <span>対象タグに一致する動画だけ投稿する</span>
+        </label>
+        <p class="hint">OFF の場合、動画タグに関係なく投稿します。初期状態は OFF です。</p>
+      </section>
+
+      <section class="section">
+        <h2>行動検知</h2>
+        <div class="grid-3">
+          <label class="checkbox-row">
+            <input id="actionLike" type="checkbox">
+            <span>いいね投稿</span>
+          </label>
+          <label class="checkbox-row">
+            <input id="actionMylist" type="checkbox">
+            <span>マイリスト投稿</span>
+          </label>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>X投稿</h2>
+        <label class="checkbox-row">
+          <input id="closeXWindowAfterPost" type="checkbox">
+          <span>投稿後にX投稿用ウィンドウを閉じる</span>
+        </label>
+        <label class="checkbox-row">
+          <input id="useMinimizedPopup" type="checkbox">
+          <span>X投稿用popupを背面に隠して作成する</span>
+        </label>
+        <label>
+          <span>1日のX自動投稿上限</span>
+          <input id="dailyPostLimit" type="number" min="1" max="1000" step="1">
+        </label>
+        <p class="hint">初期値は25件です。上限到達後の投稿は削除せず、ブラウザのローカル日付が変わるまでキューに保留します。変更はXの制限リスクを理解した上で自己責任で行ってください。</p>
+        <label class="checkbox-row">
+          <input id="deviceRestrictionRewriteEnabled" type="checkbox">
+          <span>デバイス規制らしいいいね・マイリスト投稿URLを nicovideo.gay に置き換える</span>
+        </label>
+        <p class="hint">投稿直前にニコニコ本体へ未ログイン相当の確認を1回だけ行い、HARMFUL_VIDEO の場合だけURLを差し替えます。nicovideo.gay へ拡張機能から直接通信はしません。</p>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <h2>スマホ連携</h2>
+          <button id="mobileSyncReset" type="button" class="secondary">同期基準をリセット</button>
+        </div>
+        <label class="checkbox-row">
+          <input id="mobileSyncEnabled" type="checkbox">
+          <span>スマホ側の行動をニコニコのアカウント履歴から自動回収する</span>
+        </label>
+        <p class="hint">初期状態はONです。初回は現在の一覧を基準化し、以後に増えた動画だけ自動投稿します。不要な場合はOFFにできます。</p>
+        <details class="advanced-settings">
+          <summary>詳細設定</summary>
+          <label>
+            <span>確認間隔（分）</span>
+            <input id="mobileSyncInterval" type="number" min="1" max="60" step="1">
+          </label>
+          <label>
+            <span>1回の同期で投稿する最大件数</span>
+            <input id="mobileSyncMaxItems" type="number" min="1" max="10" step="1">
+          </label>
+          <p class="hint">取得元は内蔵のニコニコAPIを使います。非公開マイリストや公開状態を確認できないマイリストは投稿しません。</p>
+        </details>
+        <p id="mobileSyncSummary" class="summary"></p>
+      </section>
+
+      <section class="section">
+        <h2>投稿テンプレート</h2>
+        <div class="template-grid">
+          <label>
+            <span>いいね</span>
+            <textarea id="templateLike" rows="5" spellcheck="false"></textarea>
+          </label>
+          <label>
+            <span>マイリスト</span>
+            <textarea id="templateMylist" rows="5" spellcheck="false"></textarea>
+          </label>
+        </div>
+        <p class="hint">利用できる変数: {title}, {url}, {videoId}, {targetTag}, {targetTagHash}, {authorName}, {actionLabel}</p>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <h2>投稿済みキー</h2>
+          <div class="button-row">
+            <button id="clearQueue" type="button" class="secondary">未処理キュー削除</button>
+            <button id="clearPostedKeys" type="button" class="secondary">投稿済みキー削除</button>
+          </div>
+        </div>
+        <p id="postedKeysSummary" class="summary"></p>
+        <p id="queueSummary" class="summary"></p>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <h2>ログ</h2>
+          <button id="clearLogs" type="button" class="secondary">ログ削除</button>
+        </div>
+        <div class="log-columns">
+          <div>
+            <h3>成功</h3>
+            <div id="postedLogs" class="log-list"></div>
+          </div>
+          <div>
+            <h3>失敗</h3>
+            <div id="failedLogs" class="log-list"></div>
+          </div>
+          <div>
+            <h3>診断</h3>
+            <div id="diagnosticLogs" class="log-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <p id="status" class="status" role="status"></p>
+    </main>
+
+    <script src="options.js"></script>
+  </body>
+</html>

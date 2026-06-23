@@ -1,0 +1,75 @@
+{
+  "manifest_version": 3,
+  "name": "NicoRepo2",
+  "version": "0.1.68",
+  "description": "ニコニコ動画上の行動を検知し、XのWeb投稿画面から自動で個別投稿します。",
+  "permissions": [
+    "storage",
+    "tabs",
+    "windows",
+    "scripting",
+    "alarms"
+  ],
+  "host_permissions": [
+    "https://www.nicovideo.jp/*",
+    "https://nicovideo.jp/*",
+    "https://nvapi.nicovideo.jp/*",
+    "https://x.com/*",
+    "https://twitter.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.nicovideo.jp/watch/*",
+        "https://www.nicovideo.jp/*",
+        "https://nicovideo.jp/watch/*",
+        "https://nicovideo.jp/*"
+      ],
+      "js": [
+        "page-nico-bridge.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": [
+        "https://www.nicovideo.jp/watch/*",
+        "https://www.nicovideo.jp/*",
+        "https://nicovideo.jp/watch/*",
+        "https://nicovideo.jp/*"
+      ],
+      "js": [
+        "content-nico.js"
+      ],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "https://x.com/*",
+        "https://twitter.com/*"
+      ],
+      "js": [
+        "content-x.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "options_page": "options.html",
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "page-nico-bridge.js"
+      ],
+      "matches": [
+        "https://www.nicovideo.jp/*",
+        "https://nicovideo.jp/*"
+      ]
+    }
+  ],
+  "action": {
+    "default_title": "NicoRepo2"
+  }
+}
